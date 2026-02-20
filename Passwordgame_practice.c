@@ -50,6 +50,7 @@ int getRandomNumber(int level) // 난이도가 점점 올라가도록 랜덤 함
 	return rand() % (level * 7) + 1;//0이 안나오게 하기 위해 1을 더함
 }
 
+
 void showQuestion(int level, int num1, int num2)
 {
 	printf("######## %d번째 비밀번호 ########\n", level);
