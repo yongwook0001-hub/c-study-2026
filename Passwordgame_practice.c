@@ -1,17 +1,3 @@
-#include <stdio.h>
-
-int main() 
-{
-    int a = 10;
-    int *p = &a;
-
-    printf("a: %d\n", a);
-    printf("address of a: %p\n", p);
-    printf("value by pointer: %d\n", *p);
-
-    return 0;
-}
-
 #include<stdio.h>
 #include<time.h>
 
