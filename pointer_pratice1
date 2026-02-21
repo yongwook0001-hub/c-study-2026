@@ -2,7 +2,8 @@
 
 #include <stdio.h>
 
-int original(int num);
+
+int original(int *num);
 
 int main(void)
 {
@@ -76,7 +77,7 @@ int main(void)
 	return 0;
 }
 
-int original(int num)
+int original(int *num)
 {
-    num=  num - 2;
+    *num=  *num - 2;
 }
