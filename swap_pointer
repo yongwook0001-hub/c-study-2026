@@ -1,0 +1,48 @@
+#include <stdio.h>
+
+int original(int *num);
+int swap(int a, int b);
+int swap_point(int* a, int* b);
+
+int main(void)
+
+int a = 10;
+	 int b = 20;
+
+
+
+	 // a와 b의 이전 값
+	 printf("a의 값은 : %d\n", a);
+	 printf("b의 값은 : %d\n\n", b);
+	 printf("스왑 함수 전에서의 a 주소값 : %d, b 주소값 : %d\n\n", &a, &b);
+
+	/* swap(a,b);*/
+
+	 //스왑 함수 이후의 값
+	 //printf("스왑 함수 밖에서의 a 값 : %d, b 값 : %d\n\n", a, b);
+
+	 swap_point(&a, &b);
+
+
+	return 0;
+}
+
+int swap(int a, int b) //포인터 사용 없이 스왑함수 사용
+{
+	int temp = a;
+	a = b;
+	b = temp;
+
+	printf("스왑 함수 내에서의 a 주소값 : %d, b 주소값 : %d\n\n", &a, &b);
+	printf("스왑 함수 밖에서의 a 값 : %d, b 값 : %d\n\n", a, b);
+}
+
+int swap_point(int* a, int* b) //포인터 사용 없이 스왑함수 사용
+{
+	int temp = *a;
+	*a = *b;
+	*b = temp;
+
+	printf("스왑 함수 내에서의 a 주소값 : %d, b 주소값 : %d\n\n", &a, &b);
+	printf("스왑 함수 내에서의 a 값 : %d, b 값 : %d\n\n", *a, *b);
+}
