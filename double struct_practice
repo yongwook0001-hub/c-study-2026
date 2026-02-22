@@ -1,0 +1,114 @@
+#include<stdio.h>
+#include<time.h>
+
+struct GameInfo {
+	char* name;
+	int year;
+	int price;
+	char* company;
+
+	struct GameInfo* friendGame; // 연관 업체 게임 // 구조체 안의 구조체
+};
+
+void printGameInfo(struct GameInfo game);
+
+int main()
+{
+	// 게임 출시 이름, 발매년도, 가격, 제작사
+	//아래 정보들을 하나로 관리하면 좋겠다 -> 구조체
+	//char* name = "나도게임";
+	//int year = 2017;
+	//int price = 50;
+	//char* company = "나도회사";
+
+	///*char* name = "나도게임";
+	//int year = 2017;
+	//int price = 50;
+	//char* company = "나도회사";*/
+
+	//char* name2 = "너도게임";
+	//int year2 = 2017;
+	//int price2 = 100;
+	//char* company2 = "너도회사";
+
+	//구조체 사용
+	struct GameInfo gameInfo1;
+	gameInfo1.name = "우지원";
+	gameInfo1.year = 2004;
+	gameInfo1.price = 23;
+	gameInfo1.company = "마이스";
+
+	//구조체 출력
+	//printf("--게임 출시 정보-- \n");
+	//printf("%t게임명%t:%s\n", gameInfo1.name);
+	//printf("%t발매년도%t:%d\n", gameInfo1.year);
+	//printf("%t가격%t:%d\n", gameInfo1.price);
+	//printf("%t회사명%t:%s\n", gameInfo1.company);
+
+	printGameInfo(gameInfo1);
+
+	//구조체를 배열처럼 초기화
+	// 함수랑 구조체로 두줄만에 가능
+	struct GameInfo gameInfo2 = { "이용욱", 2001, 26, "네이버" };
+	
+	printGameInfo(gameInfo2);
+
+	struct GameInfo gameArray[2] = {
+		{ "너도게임", 2026, 100, "너도회사" },
+		{ "이용욱", 2024, 100, "네이버" }
+	};
+
+	struct GameInfo* gamePtr; // 구조체 포인터
+	gamePtr = &gameInfo1;
+
+	printGameInfo(*gamePtr); //우지원 출력
+	printGameInfo(gameInfo1); // 우지원 출력
+	//printf("--게임 출시 정보-- \n");
+	//printf("게임명:%s\n", (*gamePtr).name); = gamePtr -> game
+	//printf("발매년도:%d\n", (*gamePtr).year); = gamePtr -> year
+	//printf("가격:%d\n", (*gamePtr).price); = gamePtr -> price
+	//printf("회사명:%s\n", (*gamePtr).company); = gamePtr -> company
+
+	// 연관 업체 게임 (구조체 안의 구조체)
+
+	gameInfo1.friendGame = &gameInfo2;
+
+	printf("--게임 출시 정보-- \n");
+	printf("게임명:%s\n", gameInfo1.friendGame ->name);
+	printf("발매년도:%d\n", gameInfo1.friendGame->year);
+	printf("가격:%d\n", gameInfo1.friendGame->price);
+	printf("회사명:%s\n\n\n", gameInfo1.friendGame->company);
+
+
+	printGameInfo(*gameInfo1.friendGame);
+
+
+
+	//typedef 자료형에 별명 지정
+
+	int i = 1;
+
+	typedef int 정수;
+	정수 정수변수 = 3; // int i = 3
+	typedef float 실수;
+	실수 실수변수 = 3.23f;
+
+	printf("=== 정수변수 : %d , 실수변수 : %.2f\n\n", 정수변수, 실수변수);
+
+	typedef struct GameInfo 게임정보;// struct GameInfo = 게임정보
+	게임정보 game1 = { "이용권", 2004, 24," 안산대" };
+	printGameInfo(game1);
+	
+
+	return 0;
+}
+
+void printGameInfo(struct GameInfo game) // 함수 안에서 쓰는 지역 변수이므로 game이든 다른 이름이든 상관없다.
+{
+	printf("-- 게임 출시 정보 --\n");
+	printf("게임명: %s\n", game.name);
+	printf("발매년도: %d\n", game.year);
+	printf("가격: %d\n", game.price);
+	printf("회사명: %s\n", game.company);
+	printf(" ------------------ \n\n");
+}
