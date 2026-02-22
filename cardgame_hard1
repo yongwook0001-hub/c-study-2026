@@ -1,0 +1,206 @@
+#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
+
+int arrayAnimal[4][5]; // 카드 지도 총 20장로 값은 0~9
+int checkAnimal[4][5]; // 카드가 이미 뒤집혔는지 여부 확인하는 배열, 0: 아직 안 맞춤,  -1 : 이미 맞춘 카드
+char* strAnimal[10]; //동물종류
+
+void initAnimalArray();// 배열 초기화
+void initAnimalName(); // 동물 이름 저장
+
+void shuffleAnimal(); // 동물 카드 섞기
+
+int getEmptyPosition(); // 비어있는 위치 찾기
+
+int  conv_pos_x(int x); // x로 치환하기
+int  conv_pos_y(int y); // y로 치환하기
+
+void printfAnimals(); // 정답 동물 위치 출력
+void printQuestion(); // 문제 출력(카드 지도)
+
+int foundAllAnimals(); // 게임 종료 조건 확인
+
+int main(void)
+{
+    //10마리의 서로 다른 동물 (각 카드 2장씩)
+    // 사용자로부터 2개의 입력값을 받아서 같은 동물을 찾는 게임
+
+    srand(time(NULL)); // 난수 초기화
+
+    initAnimalArray(); // 배열은 -1과 0으로 저장
+    initAnimalName(); // 동물 이름 설정 ex 기린 등등
+    shuffleAnimal(); // 카드 랜덤 배치
+
+    int failCount = 0; //실패 횟수
+    int select1 = 0; // 사용자가 선택한 처음 수
+    int select2 = 0; // 사용자가 선택한 두번째 수
+
+    while (1)
+    {
+        printfAnimals(); // 동물 위치 출력
+        printQuestion(); // 문제 출력(카드 지도)
+
+        printf("뒤집을 카드를 2개 고르세요 (0~19) : ");
+        scanf_s("%d %d", &select1, &select2);
+
+        if (select1 == select2) // 같은 선택 방지
+            continue;
+
+        if (select1 < 0 || select1 >= 20 || select2 < 0 || select2 >= 20) // 잘못된 입력 방지
+            continue;
+
+        //1차원 번호를 2차원 자표로 반환
+        int firstSelect_x = conv_pos_x(select1);
+        int firstSelect_y = conv_pos_y(select1);
+
+        int secondSelect_x = conv_pos_x(select2);
+        int secondSelect_y = conv_pos_y(select2);
+
+        if ((checkAnimal[firstSelect_x][firstSelect_y] == 0 &&
+            checkAnimal[secondSelect_x][secondSelect_y] == 0) &&
+            arrayAnimal[firstSelect_x][firstSelect_y] ==
+            arrayAnimal[secondSelect_x][secondSelect_y])
+        {
+            printf("\n\n 빙고 ! : %s 발견 \n\n",
+                strAnimal[arrayAnimal[firstSelect_x][firstSelect_y]]);
+
+            checkAnimal[firstSelect_x][firstSelect_y] = 1;
+            checkAnimal[secondSelect_x][secondSelect_y] = 1;
+        }
+        else
+        {
+            printf("\n\n 땡 ! (틀렸거나 이미 뒤집힌 카드입니다)\n\n");
+            failCount++;
+        }
+
+        if (foundAllAnimals() == 1)
+        {
+            printf("\n\n 축하합니다 모든 동물을 다 찾았네요 \n\n");
+            printf(" 지금까지 총 %d번 실수하셨습니다. \n", failCount);
+            break;
+        }
+    }
+
+    return 0;
+}
+
+void initAnimalArray() // 비어있는 자리는 -1
+{
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            arrayAnimal[i][j] = -1;
+            checkAnimal[i][j] = 0;
+        }
+    }
+}
+
+void initAnimalName()
+{
+    strAnimal[0] = "원숭이";
+    strAnimal[1] = "하마";
+    strAnimal[2] = "강아지";
+    strAnimal[3] = "고양이";
+    strAnimal[4] = "돼지";
+    strAnimal[5] = "코끼리";
+    strAnimal[6] = "기린";
+    strAnimal[7] = "낙타";
+    strAnimal[8] = "타조";
+    strAnimal[9] = "호랑이";
+}
+
+void shuffleAnimal() // 맵에다 같은 동물 두개씩
+{
+    // ㅁㅁㅁㅁㅁ
+    // ㅁㅁㅁㅁㅁ
+    // ㅁㅁㅁㅁㅁ
+    // ㅁㅁㅁㅁㅁ
+
+    for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 2; j++)
+        {
+            int pos = getEmptyPosition();
+            int x = conv_pos_x(pos);
+            int y = conv_pos_y(pos);
+
+            arrayAnimal[x][y] = i; //지도에 i값을 넣음으로 동물의 포지션과 일치
+        }
+    }
+}
+
+int getEmptyPosition() // 좌표에서 빈 공간 찾기
+{
+    // ㅁㅁㅁㅁㅁ 0 1 2 3 4 
+    // ㅁㅁㅁㅁㅁ 5 6 7 8 9
+    // ㅁㅁㅁㅁㅁ 10 11 12 13 14
+    // ㅁㅁㅁㅁㅁ 15 16 17 18 19
+    while (1)
+    {
+        int randPos = rand() % 20; // 0~19 사이의 숫자 반환
+        int x = conv_pos_x(randPos);
+        int y = conv_pos_y(randPos);
+
+        if (arrayAnimal[x][y] == -1)
+            return randPos;
+    }
+}
+
+int conv_pos_x(int x) // 19 -> (3,4)
+{
+    return x / 5;
+}
+
+int conv_pos_y(int y) // 5로 나눈 나머지 값
+{
+    return y % 5;
+}
+
+void printfAnimals() // 동물 위치 출력
+{
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            printf("%8s", strAnimal[arrayAnimal[i][j]]);
+        }
+        printf("\n");
+    }
+    printf("\n==============================\n\n");
+}
+
+void printQuestion() // 문제 출력(카드 지도)
+{
+    printf("\n\n 문제 \n");
+    int seq = 0;
+
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            //카드를 뒤집어서 정답을 맞혔으면 동물 이름
+            if (checkAnimal[i][j] != 0)
+                printf("%8s", strAnimal[arrayAnimal[i][j]]);
+            else
+                printf("%8d", seq); // 아직 뒤집지 못했으면 위치 숫자
+
+            seq++;
+        }
+        printf("\n");
+    }
+}
+
+int foundAllAnimals()
+{
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            if (checkAnimal[i][j] == 0)
+                return 0;
+        }
+    }
+    return 1; // 모두 다 찾음
+}
